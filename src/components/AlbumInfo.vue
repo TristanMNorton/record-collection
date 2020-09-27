@@ -1,0 +1,66 @@
+<template>
+  <div class="album-info pr-8" v-if="albumInfo">
+    <h2 class="text-4xl">{{ albumInfo.title }}</h2>
+    <h3 class="text-2xl mb-4">{{ artistString }}</h3>
+    <div class="bio">
+      <p>{{ albumInfo.notes }}</p>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+import axios from 'axios'
+
+export default {
+
+  data () {
+    return {
+      albumInfo: null
+    }
+  },
+
+  computed: {
+    ...mapState(['selectedAlbumId']),
+
+    artistString () {
+      const { artists } = this.albumInfo
+
+      if (artists.length === 1) {
+        const [artist] = artists
+        return artist.name
+      }
+
+      if (artists.length > 1) {
+        const allArtistNames = artists.map(artist => artist.name)
+        return allArtistNames.join(', ')
+      }
+
+      return 'Unknown'
+    }
+  },
+
+  watch: {
+    selectedAlbumId () {
+      this.getAlbumInfo()
+    }
+  },
+
+  methods: {
+    getAlbumInfo () {
+      axios.get(`https://api.discogs.com/releases/${this.selectedAlbumId}`, {
+        headers: {
+          Authorization: 'Discogs token=aorlvvcIpLUWwpNjhTpNLEXNbyIBEDlxZeCFtFVh'
+        }
+      }).then(res => {
+        this.albumInfo = res.data
+      })
+    }
+  },
+
+  mounted () {
+    this.getAlbumInfo()
+  }
+
+}
+</script>
