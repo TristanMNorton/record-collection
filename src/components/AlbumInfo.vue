@@ -16,7 +16,8 @@ export default {
 
   data () {
     return {
-      albumInfo: null
+      albumInfo: null,
+      indexedAlbums: {}
     }
   },
 
@@ -48,12 +49,18 @@ export default {
 
   methods: {
     getAlbumInfo () {
+      if (this.indexedAlbums && typeof this.indexedAlbums[this.selectedAlbumId] !== 'undefined') {
+        this.albumInfo = this.indexedAlbums[this.selectedAlbumId]
+        return
+      }
+
       axios.get(`https://api.discogs.com/releases/${this.selectedAlbumId}`, {
         headers: {
           Authorization: 'Discogs token=aorlvvcIpLUWwpNjhTpNLEXNbyIBEDlxZeCFtFVh'
         }
       }).then(res => {
         this.albumInfo = res.data
+        this.indexedAlbums[this.selectedAlbumId] = res.data
       })
     }
   },

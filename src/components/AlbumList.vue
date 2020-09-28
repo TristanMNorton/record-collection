@@ -92,6 +92,7 @@ export default {
   width: 100%;
   height: 200px;
   background-image: linear-gradient(to bottom, transparent 10%, #282828 48%);
+  pointer-events: none;
 }
 
 .album-list__list {
